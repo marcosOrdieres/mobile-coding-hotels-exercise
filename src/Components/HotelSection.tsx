@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, Image, Text, StyleSheet} from 'react-native';
-import useTheme from '../Theme/useTheme';
 import useThemedStyles from '../Theme/useThemedStyles';
 
 export interface HotelSectionProps {
@@ -15,7 +14,6 @@ export interface HotelSectionProps {
 }
 
 export const HotelSection: React.FC<HotelSectionProps> = props => {
-  const theme = useTheme();
   const style = useThemedStyles(styles);
 
   return (
@@ -44,7 +42,7 @@ export const HotelSection: React.FC<HotelSectionProps> = props => {
   );
 };
 
-const styles = theme =>
+const styles = (theme: any) =>
   StyleSheet.create({
     mainView: {
       flex: 1,

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -7,6 +7,8 @@ import {
   View,
   Text,
   StyleSheet,
+  Button,
+  TextInput,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Header from '../../Components/Header';
@@ -14,6 +16,7 @@ import HotelSection from '../../Components/HotelSection';
 import {useFetch} from '../../hooks/useFetch';
 import useTheme from '../../Theme/useTheme';
 import useThemedStyles from '../../Theme/useThemedStyles';
+import {Picker} from '@react-native-picker/picker';
 
 export type HotelListType = {
   checkIn: {
@@ -44,16 +47,19 @@ export type HotelListType = {
 };
 
 export const StartScreen = () => {
+  const [filterFeature, setFilterFeature] = useState<string>('price');
+  const [number, setNumber] = useState<number>(1000);
+
   const {response, isLoading, error, setFetch, resetFetchData} = useFetch();
   const theme = useTheme();
   const style = useThemedStyles(styles);
 
   const isDarkMode = useColorScheme() === 'dark';
-  console.log('response', response);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+  const pickerRef = useRef();
 
   useEffect(() => {
     //setFetch(`${process.env.REACT_APP_LASTMINUTE_URL}`);
@@ -73,8 +79,36 @@ export const StartScreen = () => {
         </Header>
 
         <View style={style.filterView}>
-          <Text style={style.sectionDescription}>Filter</Text>
-          <Text style={style.sectionDescription}>Order by: Price</Text>
+          <Button
+            title="Filter"
+            style={style.sectionDescription}
+            onPress={() => pickerRef?.current.focus()}
+          />
+
+          <Picker
+            ref={pickerRef}
+            selectedValue={filterFeature}
+            onValueChange={(itemValue: string) => setFilterFeature(itemValue)}>
+            <Picker.Item label="Price" value="price" />
+            <Picker.Item label="Stars" value="stars" />
+            <Picker.Item label="User rating" value="userRating" />
+          </Picker>
+
+          <Text style={style.sectionDescription}>
+            Ordered by: {filterFeature}
+          </Text>
+
+          <TextInput
+            style={style.input}
+            onChangeText={(numberToChange: string) =>
+              numberToChange === ''
+                ? setNumber(1000)
+                : setNumber(parseInt(numberToChange))
+            }
+            value={number}
+            placeholder="Max Price"
+            keyboardType="numeric"
+          />
         </View>
 
         <View style={style.resultsView}>
@@ -83,25 +117,31 @@ export const StartScreen = () => {
           </Text>
         </View>
 
-        {response?.map((hotel: HotelListType) => (
-          <HotelSection
-            key={hotel.id}
-            uri={hotel.gallery[0]}
-            userRating={hotel.userRating}
-            name={hotel.name}
-            stars={hotel.stars}
-            city={hotel.location.city}
-            address={hotel.location.address}
-            price={hotel.price}
-            currency={hotel.currency}
-          />
-        ))}
+        {response
+          ?.sort(
+            (a: HotelListType, b: HotelListType) =>
+              b[filterFeature] - a[filterFeature],
+          )
+          .filter((hotel: HotelListType) => hotel.price < number)
+          .map((hotel: HotelListType) => (
+            <HotelSection
+              key={hotel.id}
+              uri={hotel.gallery[0]}
+              userRating={hotel.userRating}
+              name={hotel.name}
+              stars={hotel.stars}
+              city={hotel.location.city}
+              address={hotel.location.address}
+              price={hotel.price}
+              currency={hotel.currency}
+            />
+          ))}
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-const styles = theme =>
+const styles = (theme: any) =>
   StyleSheet.create({
     sectionDescription: {
       fontFamily: 'OpenSans',
@@ -127,5 +167,11 @@ const styles = theme =>
       alignItems: 'center',
       justifyContent: 'center',
       color: theme.colors.BACKGROUND,
+    },
+    input: {
+      height: 40,
+      margin: 12,
+      borderWidth: 1,
+      padding: 10,
     },
   });

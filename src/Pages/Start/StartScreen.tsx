@@ -10,9 +10,38 @@ import {
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Header from '../../Components/Header';
+import HotelSection from '../../Components/HotelSection';
 import {useFetch} from '../../hooks/useFetch';
 import useTheme from '../../Theme/useTheme';
 import useThemedStyles from '../../Theme/useThemedStyles';
+
+export type HotelListType = {
+  checkIn: {
+    from: string;
+    to: string;
+  };
+  checkOut: {
+    from: string;
+    to: string;
+  };
+  contact: {
+    phoneNumber: string;
+    email: string;
+  };
+  currency: string;
+  gallery: string[];
+  id: number;
+  location: {
+    address: string;
+    city: string;
+    latitude: number;
+    longitude: number;
+  };
+  name: string;
+  price: number;
+  stars: number;
+  userRating: number;
+};
 
 export const StartScreen = () => {
   const {response, isLoading, error, setFetch, resetFetchData} = useFetch();
@@ -20,6 +49,7 @@ export const StartScreen = () => {
   const style = useThemedStyles(styles);
 
   const isDarkMode = useColorScheme() === 'dark';
+  console.log('response', response);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -48,12 +78,24 @@ export const StartScreen = () => {
         </View>
 
         <View style={style.resultsView}>
-          <Text style={style.sectionDescription}>6 out of 6 results</Text>
+          <Text style={style.sectionDescription}>
+            {response?.length} out of {response?.length} results
+          </Text>
         </View>
 
-        <View style={{backgroundColor: theme.colors.BACKGROUND}}>
-          <Text style={style.sectionDescription}>Body</Text>
-        </View>
+        {response?.map((hotel: HotelListType) => (
+          <HotelSection
+            key={hotel.id}
+            uri={hotel.gallery[0]}
+            userRating={hotel.userRating}
+            name={hotel.name}
+            stars={hotel.stars}
+            city={hotel.location.city}
+            address={hotel.location.address}
+            price={hotel.price}
+            currency={hotel.currency}
+          />
+        ))}
       </ScrollView>
     </SafeAreaView>
   );

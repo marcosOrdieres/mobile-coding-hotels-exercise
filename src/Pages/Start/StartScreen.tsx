@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Button,
   TextInput,
+  Modal,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Header from '../../Components/Header';
@@ -17,40 +18,16 @@ import {useFetch} from '../../hooks/useFetch';
 import useTheme from '../../Theme/useTheme';
 import useThemedStyles from '../../Theme/useThemedStyles';
 import {Picker} from '@react-native-picker/picker';
-
-export type HotelListType = {
-  checkIn: {
-    from: string;
-    to: string;
-  };
-  checkOut: {
-    from: string;
-    to: string;
-  };
-  contact: {
-    phoneNumber: string;
-    email: string;
-  };
-  currency: string;
-  gallery: string[];
-  id: number;
-  location: {
-    address: string;
-    city: string;
-    latitude: number;
-    longitude: number;
-  };
-  name: string;
-  price: number;
-  stars: number;
-  userRating: number;
-};
+import {HotelListType} from '../../types/HotelListType';
+import DetailedHotel from '../../Components/DetailedHotel';
 
 export const StartScreen = () => {
   const [filterFeature, setFilterFeature] = useState<string>('price');
-  const [number, setNumber] = useState<number>(1000);
+  const [maximumPrice, setMaximumPrice] = useState<number>(1000);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [hotelData, setHotelData] = useState<HotelListType | null>(null);
 
-  const {response, isLoading, error, setFetch, resetFetchData} = useFetch();
+  const {response, isLoading, error, setFetch} = useFetch();
   const theme = useTheme();
   const style = useThemedStyles(styles);
 
@@ -102,10 +79,10 @@ export const StartScreen = () => {
             style={style.input}
             onChangeText={(numberToChange: string) =>
               numberToChange === ''
-                ? setNumber(1000)
-                : setNumber(parseInt(numberToChange))
+                ? setMaximumPrice(1000)
+                : setMaximumPrice(parseInt(numberToChange))
             }
-            value={number}
+            value={maximumPrice}
             placeholder="Max Price"
             keyboardType="numeric"
           />
@@ -122,7 +99,7 @@ export const StartScreen = () => {
             (a: HotelListType, b: HotelListType) =>
               b[filterFeature] - a[filterFeature],
           )
-          .filter((hotel: HotelListType) => hotel.price < number)
+          .filter((hotel: HotelListType) => hotel.price < maximumPrice)
           .map((hotel: HotelListType) => (
             <HotelSection
               key={hotel.id}
@@ -134,8 +111,23 @@ export const StartScreen = () => {
               address={hotel.location.address}
               price={hotel.price}
               currency={hotel.currency}
+              onPressMoreDetails={() => {
+                setModalVisible(true);
+                setHotelData(hotel);
+              }}
             />
           ))}
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(!modalVisible)}>
+          <DetailedHotel
+            onHidePress={() => setModalVisible(!modalVisible)}
+            data={hotelData}
+          />
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );

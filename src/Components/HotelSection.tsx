@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Image, Text, StyleSheet} from 'react-native';
+import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import useThemedStyles from '../Theme/useThemedStyles';
 
 export interface HotelSectionProps {
@@ -11,13 +11,14 @@ export interface HotelSectionProps {
   address: string;
   price: number;
   currency: string;
+  onPressMoreDetails: any;
 }
 
 export const HotelSection: React.FC<HotelSectionProps> = props => {
   const style = useThemedStyles(styles);
 
   return (
-    <View style={style.mainView}>
+    <TouchableOpacity onPress={props.onPressMoreDetails} style={style.mainView}>
       <View style={{flex: 0.7, flexDirection: 'row'}}>
         <View style={{flex: 2, flexDirection: 'column'}}>
           <Image style={style.imageView} source={{uri: props.uri}} />
@@ -38,7 +39,7 @@ export const HotelSection: React.FC<HotelSectionProps> = props => {
           {props.price} {props.currency}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

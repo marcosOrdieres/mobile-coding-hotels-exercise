@@ -7,6 +7,7 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
+import useTheme from '../Theme/useTheme';
 import useThemedStyles from '../Theme/useThemedStyles';
 import {HotelListType} from '../types/HotelListType';
 

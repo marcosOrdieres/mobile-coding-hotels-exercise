@@ -1,6 +1,8 @@
 import React from 'react';
 import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import useThemedStyles from '../Theme/useThemedStyles';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import useTheme from '../Theme/useTheme';
 
 export interface HotelSectionProps {
   userRating: number;
@@ -16,6 +18,7 @@ export interface HotelSectionProps {
 
 export const HotelSection: React.FC<HotelSectionProps> = props => {
   const style = useThemedStyles(styles);
+  const theme = useTheme();
 
   return (
     <TouchableOpacity onPress={props.onPressMoreDetails} style={style.mainView}>
@@ -27,10 +30,22 @@ export const HotelSection: React.FC<HotelSectionProps> = props => {
           <View style={style.ratingBox}>
             <Text style={style.ratingText}>{props.userRating}</Text>
           </View>
-          <Text style={style.hotelSectionText}>{props.name}</Text>
-          <Text style={style.hotelSectionText}>{props.stars}</Text>
-          <Text style={style.hotelSectionText}>{props.city}</Text>
-          <Text style={style.hotelSectionText}>{props.address}</Text>
+          <View style={{maxWidth: 150}}>
+            <Text style={[style.hotelSectionText, {fontWeight: 'bold'}]}>
+              {props.name}
+            </Text>
+          </View>
+
+          <View style={{flexDirection: 'row'}}>
+            {[...Array(props.stars)].map(star => (
+              <React.Fragment key={star}>
+                <Icon name="star" color={theme.colors.STAR} size={25} />
+              </React.Fragment>
+            ))}
+          </View>
+
+          <Text style={style.hotelSectionText}>City: {props.city}</Text>
+          <Text style={style.hotelSectionText}>Address: {props.address}</Text>
         </View>
       </View>
       <View style={style.priceView}>
@@ -71,25 +86,22 @@ const styles = (theme: any) =>
       height: '100%',
     },
     hotelSectionText: {
-      fontFamily: 'OpenSans',
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: '300',
       color: theme.colors.TEXT,
+      marginBottom: 5,
     },
     ratingText: {
-      fontFamily: 'OpenSans',
       fontSize: 22,
       fontWeight: '700',
       color: 'white',
     },
     priceText: {
-      fontFamily: 'OpenSans',
       fontSize: 22,
       fontWeight: '700',
       color: theme.colors.TEXT,
     },
     priceSubtext: {
-      fontFamily: 'OpenSans',
       fontSize: 12,
       fontWeight: '300',
       color: theme.colors.TEXT,

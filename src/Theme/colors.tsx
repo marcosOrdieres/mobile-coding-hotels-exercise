@@ -4,12 +4,14 @@ const EMERALD = '#2ecc71';
 const LIGHT = '#ecf0f1';
 const SILVER = '#bdc3c7';
 const LASTMINUTE = '#f2007d';
+const STAR = '#f1df5a';
 
 const common = {
   SUCCESS: EMERALD,
   LASTMINUTE: LASTMINUTE,
   SILVER: SILVER,
   SECONDARY_DARK: SECONDARY_DARK,
+  STAR: STAR,
 };
 
 const light = {

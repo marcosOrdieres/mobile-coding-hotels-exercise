@@ -14,6 +14,7 @@ export const Header: React.FC<HeaderProps> = props => {
         height: 70,
         backgroundColor: props.backgroundColor,
         alignItems: 'center',
+        justifyContent: 'center',
       }}>
       {props.children}
     </View>

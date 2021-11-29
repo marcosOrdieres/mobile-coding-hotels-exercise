@@ -10,6 +10,7 @@ import {
   Button,
   TextInput,
   Modal,
+  TouchableOpacity,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Header from '../../Components/Header';
@@ -20,6 +21,7 @@ import useThemedStyles from '../../Theme/useThemedStyles';
 import {Picker} from '@react-native-picker/picker';
 import {HotelListType} from '../../types/HotelListType';
 import DetailedHotel from '../../Components/DetailedHotel';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const StartScreen = () => {
   const [filterFeature, setFilterFeature] = useState<string>('price');
@@ -52,18 +54,32 @@ export const StartScreen = () => {
         stickyHeaderIndices={[0]}
         style={backgroundStyle}>
         <Header backgroundColor={theme.colors.BACKGROUND}>
-          <Text style={[style.sectionDescription]}>Hotels</Text>
+          <Text style={style.mainTitle}>Hotels</Text>
         </Header>
 
         <View style={style.filterView}>
-          <Button
-            title="Filter"
-            style={style.sectionDescription}
-            onPress={() => pickerRef?.current.focus()}
-          />
+          <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            color={theme.colors.SECONDARY_DARK}
+            onPress={() => pickerRef?.current.focus()}>
+            <Icon name="filter-alt" color="#58a6ff" size={25} />
+            <Text
+              style={[
+                style.sectionDescription,
+                {color: '#58a6ff', paddingLeft: 5},
+              ]}>
+              Filter
+            </Text>
+          </TouchableOpacity>
 
           <Picker
             ref={pickerRef}
+            dropdownIconColor={theme.colors.SECONDARY_DARK}
+            dropdownIconRippleColor={theme.colors.SECONDARY_DARK}
             selectedValue={filterFeature}
             onValueChange={(itemValue: string) => setFilterFeature(itemValue)}>
             <Picker.Item label="Price" value="price" />
@@ -71,7 +87,7 @@ export const StartScreen = () => {
             <Picker.Item label="User rating" value="userRating" />
           </Picker>
 
-          <Text style={style.sectionDescription}>
+          <Text style={[style.sectionDescription, {color: 'white'}]}>
             Ordered by: {filterFeature}
           </Text>
 
@@ -82,6 +98,7 @@ export const StartScreen = () => {
                 ? setMaximumPrice(1000)
                 : setMaximumPrice(parseInt(numberToChange))
             }
+            placeholderTextColor="#808080"
             value={maximumPrice}
             placeholder="Max Price"
             keyboardType="numeric"
@@ -95,9 +112,10 @@ export const StartScreen = () => {
         </View>
 
         {response
-          ?.sort(
-            (a: HotelListType, b: HotelListType) =>
-              b[filterFeature] - a[filterFeature],
+          ?.sort((a: HotelListType, b: HotelListType) =>
+            filterFeature === 'price'
+              ? a[filterFeature] - b[filterFeature]
+              : b[filterFeature] - a[filterFeature],
           )
           .filter((hotel: HotelListType) => hotel.price < maximumPrice)
           .map((hotel: HotelListType) => (
@@ -135,10 +153,14 @@ export const StartScreen = () => {
 
 const styles = (theme: any) =>
   StyleSheet.create({
+    mainTitle: {
+      fontSize: 26,
+      fontWeight: '900',
+      color: theme.colors.TEXT,
+    },
     sectionDescription: {
-      fontFamily: 'OpenSans',
       fontSize: 18,
-      fontWeight: '300',
+      fontWeight: '600',
       color: theme.colors.TEXT,
     },
     highlight: {
@@ -146,7 +168,7 @@ const styles = (theme: any) =>
     },
     filterView: {
       width: '100%',
-      height: 50,
+      height: 60,
       flex: 1,
       flexDirection: 'row',
       backgroundColor: theme.colors.SECONDARY_DARK,
@@ -165,5 +187,6 @@ const styles = (theme: any) =>
       margin: 12,
       borderWidth: 1,
       padding: 10,
+      color: 'white',
     },
   });

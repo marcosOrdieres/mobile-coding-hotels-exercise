@@ -113,9 +113,12 @@ This application uses some plugins in order to make the life a bit easier.
 ## DEMO
 
 #### android:
+![ezgif com-gif-maker (1)](https://user-images.githubusercontent.com/15955125/144049927-f23192bb-7301-4706-8d32-1e8d355e70fe.gif)
+
 
 #### ios:
 
+![ezgif com-gif-maker (2)](https://user-images.githubusercontent.com/15955125/144049940-56b6a59e-c14f-4ea3-8951-e811e91bca11.gif)
 
 ## License
 

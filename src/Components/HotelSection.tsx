@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import useThemedStyles from '../Theme/useThemedStyles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -17,6 +17,7 @@ export interface HotelSectionProps {
 }
 
 export const HotelSection: React.FC<HotelSectionProps> = props => {
+  const [imageError, setImageError] = useState<boolean>(false);
   const style = useThemedStyles(styles);
   const theme = useTheme();
 
@@ -24,7 +25,15 @@ export const HotelSection: React.FC<HotelSectionProps> = props => {
     <TouchableOpacity onPress={props.onPressMoreDetails} style={style.mainView}>
       <View style={{flex: 0.7, flexDirection: 'row'}}>
         <View style={{flex: 2, flexDirection: 'column'}}>
-          <Image style={style.imageView} source={{uri: props.uri}} />
+          <Image
+            style={style.imageView}
+            source={
+              imageError
+                ? require('../assets/Images/default_image.jpeg')
+                : {uri: props.uri}
+            }
+            onError={() => setImageError(true)}
+          />
         </View>
         <View style={style.hotelTextView}>
           <View style={style.ratingBox}>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ export interface DetailedHotelProps {
 }
 
 export const DetailedHotel: React.FC<DetailedHotelProps> = props => {
+  const [imageError, setImageError] = useState<boolean>(false);
   const style = useThemedStyles(styles);
 
   return (
@@ -29,7 +30,15 @@ export const DetailedHotel: React.FC<DetailedHotelProps> = props => {
             <View
               key={hotelImage}
               style={{width: 250, height: 250, margin: 10}}>
-              <Image style={style.imageView} source={{uri: hotelImage}} />
+              <Image
+                style={style.imageView}
+                source={
+                  imageError
+                    ? require('../assets/Images/default_image.jpeg')
+                    : {uri: hotelImage}
+                }
+                onError={() => setImageError(true)}
+              />
             </View>
           ))}
         </ScrollView>

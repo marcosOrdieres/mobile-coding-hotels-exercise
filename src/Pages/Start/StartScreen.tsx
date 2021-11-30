@@ -199,6 +199,8 @@ const styles = (theme: any) =>
       fontSize: 26,
       fontWeight: '900',
       color: theme.colors.TEXT,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     sectionDescription: {
       fontSize: 16,

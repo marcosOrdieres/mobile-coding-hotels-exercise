@@ -1,5 +1,6 @@
 import React from 'react';
-import {View} from 'react-native';
+import {View, StyleSheet} from 'react-native';
+import useThemedStyles from '../Theme/useThemedStyles';
 
 export interface HeaderProps {
   children: any;
@@ -7,18 +8,24 @@ export interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = props => {
+  const style = useThemedStyles(styles);
+
   return (
     <View
-      style={{
-        width: '100%',
-        height: 70,
-        backgroundColor: props.backgroundColor,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
+      style={[style.headerMainView, {backgroundColor: props.backgroundColor}]}>
       {props.children}
     </View>
   );
 };
+
+const styles = (theme: any) =>
+  StyleSheet.create({
+    headerMainView: {
+      width: '100%',
+      height: 70,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });
 
 export default Header;

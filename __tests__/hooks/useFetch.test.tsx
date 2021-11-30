@@ -64,7 +64,7 @@ const error = 'An error occured!';
 const url = 'example.com';
 
 beforeAll(() => {
-  global.fetch = fetch;
+  global.fetch = jest.fn(() => Promise.resolve(data));
 });
 
 afterAll(() => {
@@ -72,7 +72,7 @@ afterAll(() => {
 });
 
 describe('useFetch testing', () => {
-  it('should return data from teh call after fetch', async () => {
+  it('should return data from the call after fetch', async () => {
     jest.spyOn(global, 'fetch').mockImplementation(() =>
       Promise.resolve({
         json: () => Promise.resolve(data),

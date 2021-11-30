@@ -79,7 +79,7 @@ const styles = (theme: any) =>
       borderRadius: 5,
       height: 200,
       flexDirection: 'column',
-      backgroundColor: theme.colors.BACKGROUND, //TODO: light: grey, si dark: dark secondary
+      backgroundColor: theme.colors.BACKGROUND,
       marginBottom: 20,
     },
     ratingBox: {

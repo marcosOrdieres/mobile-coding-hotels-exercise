@@ -12,7 +12,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Header from '../../Components/Header';
 import HotelSection from '../../Components/HotelSection';
 import {useFetch} from '../../hooks/useFetch';
@@ -34,10 +33,6 @@ export const StartScreen = () => {
   const style = useThemedStyles(styles);
   const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   useEffect(() => {
     //setFetch(`${process.env.REACT_APP_LASTMINUTE_URL}`);
     setFetch('https://run.mocky.io/v3/eef3c24d-5bfd-4881-9af7-0b404ce09507');
@@ -50,24 +45,20 @@ export const StartScreen = () => {
   ];
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <SafeAreaView style={{backgroundColor: theme.colors.BACKGROUND}}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
 
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         stickyHeaderIndices={[0]}
-        style={backgroundStyle}>
+        style={{backgroundColor: theme.colors.BACKGROUND}}>
         <Header backgroundColor={theme.colors.BACKGROUND}>
           <Text style={style.mainTitle}>Hotels</Text>
         </Header>
 
         <View style={style.filterView}>
           <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            style={style.filterTouchable}
             color={theme.colors.SECONDARY_DARK}
             onPress={() => setModalFilterVisible(!modalFilterVisible)}>
             <Icon
@@ -168,12 +159,7 @@ export const StartScreen = () => {
         {isLoading && !error && <ActivityIndicator size="large" />}
 
         {error && (
-          <View
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingTop: 50,
-            }}>
+          <View style={style.errorView}>
             <Text style={style.mainTitle}>Sorry, there has been an error</Text>
           </View>
         )}
@@ -247,5 +233,15 @@ const styles = (theme: any) =>
       shadowRadius: 4,
       elevation: 5,
       marginTop: 100,
+    },
+    errorView: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingTop: 50,
+    },
+    filterTouchable: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   });

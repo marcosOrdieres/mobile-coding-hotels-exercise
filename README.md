@@ -1,7 +1,7 @@
 # mobile-coding-hotels-exercise
 
 ## Description
-Hotel List in where you can filter by different features and see every Hotel in detail
+Hotel List in where you can filter by different features and see every Hotel in detail.
 
 ## Features
 
@@ -24,26 +24,33 @@ This application uses a number of open source projects to work properly:
 Install the dependencies and devDependencies and start the server.
 
 ```sh
-cd product-list-case-study
+cd mobile-coding-hotels-exercise
 npm i
 npm start
 ```
 
+
 ## Development
 
-### `npm start`
+### `npm run ios`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Like ```npm start```, but also attempts to open your app in the iOS Simulator if you're on a Mac and have it installed.
 
-### `npm run build`
+### `npm run android`
 
-Builds the app for production to the `build` folder.
+Like ```npm start```, but also attempts to open your app on a connected Android device or emulator. Requires an installation of Android build tools (see React Native docs for detailed setup).
+
+Ensure that JAVA_HOME and ANDROID_HOME are set.
+
+### `npm run start`
+
+Like ```react-native start```.
 
 ### `npm run test`
 
 Run the test from the Project.
 
+This project is set up to use jest for tests. You can configure whatever testing strategy you like, but jest works out of the box. Create test files in directories called ```__tests__``` or with the .test extension to have the files loaded by jest.
 ## Components
 
 This is an example of how I structured the Components, all of them have:
@@ -66,18 +73,26 @@ export interface HeaderProps {
 export const Header: React.FC<HeaderProps> = props => {
   const style = useThemedStyles(styles);
 
-  return <View style={style.headerMainView}>{props.children}</View>;
+  return (
+    <View
+      style={[style.headerMainView, {backgroundColor: props.backgroundColor}]}>
+      {props.children}
+    </View>
+  );
 };
 
 const styles = (theme: any) =>
   StyleSheet.create({
     headerMainView: {
-      flex: 1,
-      marginTop: 30,
+      width: '100%',
+      height: 70,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   });
 
 export default Header;
+
 ```
 
 ## Plugins
@@ -92,8 +107,15 @@ This application uses some plugins in order to make the life a bit easier.
 
 ## Challenges
 
-- Have the same UI for both platforms and some small issues setting up some Libraries as Vectors for ios.
+- Have the same UI for both platforms and some small issues setting up some Libraries as Vectors for.
 - Writing all the logic and tests for the application to run smoothly.
+
+## DEMO
+
+#### android:
+
+#### ios:
+
 
 ## License
 

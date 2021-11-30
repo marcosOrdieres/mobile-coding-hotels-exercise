@@ -114,10 +114,11 @@ This application uses some plugins in order to make the life a bit easier.
 
 #### android:
 
+![ezgif com-gif-maker (5)](https://user-images.githubusercontent.com/15955125/144051001-25098c99-5601-469a-b449-7dd88f0af98a.gif)
 
 #### ios:
-![ezgif com-gif-maker (3)](https://user-images.githubusercontent.com/15955125/144050293-6408a246-99fd-4c69-9c3d-2520b3a6e4ba.gif)
 
+![ezgif com-gif-maker (4)](https://user-images.githubusercontent.com/15955125/144050990-8ac828ca-26f4-41f7-b62a-6280f16c0fec.gif)
 
 ## License
 

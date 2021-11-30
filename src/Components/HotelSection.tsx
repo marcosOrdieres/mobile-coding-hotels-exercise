@@ -37,8 +37,8 @@ export const HotelSection: React.FC<HotelSectionProps> = props => {
           </View>
 
           <View style={{flexDirection: 'row'}}>
-            {[...Array(props.stars)].map(star => (
-              <React.Fragment key={star}>
+            {[...Array(props.stars)].map((star: number, index: number) => (
+              <React.Fragment key={index}>
                 <Icon name="star" color={theme.colors.STAR} size={25} />
               </React.Fragment>
             ))}
@@ -48,11 +48,22 @@ export const HotelSection: React.FC<HotelSectionProps> = props => {
           <Text style={style.hotelSectionText}>Address: {props.address}</Text>
         </View>
       </View>
+
       <View style={style.priceView}>
-        <Text style={style.priceSubtext}>Total price for 1 night</Text>
-        <Text style={style.priceText}>
-          {props.price} {props.currency}
-        </Text>
+        <View style={{flex: 0.95, alignItems: 'flex-end'}}>
+          <Text style={style.priceSubtext}>Total price for 1 night</Text>
+          <Text style={style.priceText}>
+            {props.price} {props.currency}
+          </Text>
+        </View>
+
+        <View style={style.iconView}>
+          <Icon
+            name="chevron-right"
+            color={theme.colors.LASTMINUTE}
+            size={25}
+          />
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -88,7 +99,7 @@ const styles = (theme: any) =>
     hotelSectionText: {
       fontSize: 14,
       fontWeight: '300',
-      color: theme.colors.TEXT,
+      color: 'black',
       marginBottom: 5,
     },
     ratingText: {
@@ -108,16 +119,21 @@ const styles = (theme: any) =>
     },
     priceView: {
       flex: 0.3,
-      flexDirection: 'column',
+      flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'flex-end',
-      paddingRight: 20,
     },
     hotelTextView: {
       flex: 3,
       flexDirection: 'column',
       backgroundColor: theme.colors.SILVER, //TODO: check for light and dark
       padding: 10,
+    },
+    iconView: {
+      flex: 0.05,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingRight: 5,
     },
   });
 

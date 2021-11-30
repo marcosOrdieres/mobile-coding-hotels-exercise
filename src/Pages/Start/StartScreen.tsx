@@ -11,6 +11,7 @@ import {
   TextInput,
   Modal,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Header from '../../Components/Header';
@@ -18,7 +19,6 @@ import HotelSection from '../../Components/HotelSection';
 import {useFetch} from '../../hooks/useFetch';
 import useTheme from '../../Theme/useTheme';
 import useThemedStyles from '../../Theme/useThemedStyles';
-import {Picker} from '@react-native-picker/picker';
 import {HotelListType} from '../../types/HotelListType';
 import DetailedHotel from '../../Components/DetailedHotel';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -27,23 +27,29 @@ export const StartScreen = () => {
   const [filterFeature, setFilterFeature] = useState<string>('price');
   const [maximumPrice, setMaximumPrice] = useState<number>(1000);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [modalFilterVisible, setModalFilterVisible] = useState<boolean>(false);
+
   const [hotelData, setHotelData] = useState<HotelListType | null>(null);
 
   const {response, isLoading, error, setFetch} = useFetch();
   const theme = useTheme();
   const style = useThemedStyles(styles);
-
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-  const pickerRef = useRef();
 
   useEffect(() => {
     //setFetch(`${process.env.REACT_APP_LASTMINUTE_URL}`);
     setFetch('https://run.mocky.io/v3/eef3c24d-5bfd-4881-9af7-0b404ce09507');
   }, [setFetch]);
+
+  const features = [
+    {label: 'Price', value: 'price'},
+    {label: 'Stars', value: 'stars'},
+    {label: 'User rating', value: 'userRating'},
+  ];
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -65,7 +71,7 @@ export const StartScreen = () => {
               justifyContent: 'center',
             }}
             color={theme.colors.SECONDARY_DARK}
-            onPress={() => pickerRef?.current.focus()}>
+            onPress={() => setModalFilterVisible(!modalFilterVisible)}>
             <Icon name="filter-alt" color="#58a6ff" size={25} />
             <Text
               style={[
@@ -76,16 +82,26 @@ export const StartScreen = () => {
             </Text>
           </TouchableOpacity>
 
-          <Picker
-            ref={pickerRef}
-            dropdownIconColor={theme.colors.SECONDARY_DARK}
-            dropdownIconRippleColor={theme.colors.SECONDARY_DARK}
-            selectedValue={filterFeature}
-            onValueChange={(itemValue: string) => setFilterFeature(itemValue)}>
-            <Picker.Item label="Price" value="price" />
-            <Picker.Item label="Stars" value="stars" />
-            <Picker.Item label="User rating" value="userRating" />
-          </Picker>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalFilterVisible}
+            onRequestClose={() => setModalFilterVisible(!modalFilterVisible)}>
+            <View style={style.modalView}>
+              {features.map(eachFeature => (
+                <TouchableOpacity
+                  style={{paddingTop: 10, paddingBottom: 10}}
+                  onPress={() => {
+                    setFilterFeature(eachFeature.value);
+                    setModalFilterVisible(!modalFilterVisible);
+                  }}>
+                  <Text style={[style.sectionDescription, {color: '#58a6ff'}]}>
+                    {eachFeature.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </Modal>
 
           <Text style={[style.sectionDescription, {color: 'white'}]}>
             Ordered by: {filterFeature}
@@ -105,36 +121,53 @@ export const StartScreen = () => {
           />
         </View>
 
-        <View style={style.resultsView}>
-          <Text style={style.sectionDescription}>
-            {response?.length} out of {response?.length} results
-          </Text>
-        </View>
+        {!error && !isLoading && (
+          <View style={style.resultsView}>
+            <Text style={style.sectionDescription}>
+              {response?.length} out of {response?.length} results
+            </Text>
+          </View>
+        )}
 
-        {response
-          ?.sort((a: HotelListType, b: HotelListType) =>
-            filterFeature === 'price'
-              ? a[filterFeature] - b[filterFeature]
-              : b[filterFeature] - a[filterFeature],
-          )
-          .filter((hotel: HotelListType) => hotel.price < maximumPrice)
-          .map((hotel: HotelListType) => (
-            <HotelSection
-              key={hotel.id}
-              uri={hotel.gallery[0]}
-              userRating={hotel.userRating}
-              name={hotel.name}
-              stars={hotel.stars}
-              city={hotel.location.city}
-              address={hotel.location.address}
-              price={hotel.price}
-              currency={hotel.currency}
-              onPressMoreDetails={() => {
-                setModalVisible(true);
-                setHotelData(hotel);
-              }}
-            />
-          ))}
+        {!isLoading &&
+          !error &&
+          response
+            ?.sort((a: HotelListType, b: HotelListType) =>
+              filterFeature === 'price'
+                ? a[filterFeature] - b[filterFeature]
+                : b[filterFeature] - a[filterFeature],
+            )
+            .filter((hotel: HotelListType) => hotel.price < maximumPrice)
+            .map((hotel: HotelListType) => (
+              <HotelSection
+                key={hotel.id}
+                uri={hotel.gallery[0]}
+                userRating={hotel.userRating}
+                name={hotel.name}
+                stars={hotel.stars}
+                city={hotel.location.city}
+                address={hotel.location.address}
+                price={hotel.price}
+                currency={hotel.currency}
+                onPressMoreDetails={() => {
+                  setModalVisible(true);
+                  setHotelData(hotel);
+                }}
+              />
+            ))}
+
+        {isLoading && !error && <ActivityIndicator size="large" />}
+
+        {error && (
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingTop: 50,
+            }}>
+            <Text style={style.mainTitle}>Sorry, there has been an error</Text>
+          </View>
+        )}
 
         <Modal
           animationType="slide"
@@ -159,7 +192,7 @@ const styles = (theme: any) =>
       color: theme.colors.TEXT,
     },
     sectionDescription: {
-      fontSize: 18,
+      fontSize: 16,
       fontWeight: '600',
       color: theme.colors.TEXT,
     },
@@ -188,5 +221,20 @@ const styles = (theme: any) =>
       borderWidth: 1,
       padding: 10,
       color: 'white',
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: theme.colors.BACKGROUND,
+      borderRadius: 5,
+      padding: 35,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+      marginTop: 100,
     },
   });

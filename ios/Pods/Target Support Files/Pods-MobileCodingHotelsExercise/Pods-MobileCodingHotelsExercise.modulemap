@@ -1,0 +1,6 @@
+module Pods_MobileCodingHotelsExercise {
+  umbrella header "Pods-MobileCodingHotelsExercise-umbrella.h"
+
+  export *
+  module * { export * }
+}

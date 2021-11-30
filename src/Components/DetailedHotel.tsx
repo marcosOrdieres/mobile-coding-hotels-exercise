@@ -6,6 +6,7 @@ import {
   Pressable,
   ScrollView,
   Image,
+  Dimensions,
 } from 'react-native';
 import useTheme from '../Theme/useTheme';
 import useThemedStyles from '../Theme/useThemedStyles';
@@ -63,7 +64,7 @@ const styles = (theme: any) =>
   StyleSheet.create({
     centeredView: {
       flex: 1,
-      marginTop: 5,
+      marginTop: 30,
     },
     modalView: {
       margin: 20,

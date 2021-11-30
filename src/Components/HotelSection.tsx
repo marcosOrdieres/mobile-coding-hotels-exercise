@@ -135,7 +135,7 @@ const styles = (theme: any) =>
     hotelTextView: {
       flex: 3,
       flexDirection: 'column',
-      backgroundColor: theme.colors.SILVER, //TODO: check for light and dark
+      backgroundColor: theme.colors.SILVER,
       padding: 10,
     },
     iconView: {

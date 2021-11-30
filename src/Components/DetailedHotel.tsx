@@ -6,9 +6,7 @@ import {
   Pressable,
   ScrollView,
   Image,
-  Dimensions,
 } from 'react-native';
-import useTheme from '../Theme/useTheme';
 import useThemedStyles from '../Theme/useThemedStyles';
 import {HotelListType} from '../types/HotelListType';
 
@@ -26,10 +24,8 @@ export const DetailedHotel: React.FC<DetailedHotelProps> = props => {
       <View style={style.modalView}>
         <Text style={style.modalTextMain}>{props.data?.name}</Text>
         <ScrollView horizontal={true}>
-          {props.data?.gallery.map(hotelImage => (
-            <View
-              key={hotelImage}
-              style={{width: 250, height: 250, margin: 10}}>
+          {props.data?.gallery.map((hotelImage: string, index: number) => (
+            <View key={index} style={{width: 250, height: 250, margin: 10}}>
               <Image
                 style={style.imageView}
                 source={

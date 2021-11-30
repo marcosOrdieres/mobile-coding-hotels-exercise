@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -7,7 +7,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Button,
   TextInput,
   Modal,
   TouchableOpacity,
@@ -25,10 +24,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const StartScreen = () => {
   const [filterFeature, setFilterFeature] = useState<string>('price');
-  const [maximumPrice, setMaximumPrice] = useState<number>(1000);
+  const [maximumPrice, setMaximumPrice] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [modalFilterVisible, setModalFilterVisible] = useState<boolean>(false);
-
   const [hotelData, setHotelData] = useState<HotelListType | null>(null);
 
   const {response, isLoading, error, setFetch} = useFetch();
@@ -72,11 +70,15 @@ export const StartScreen = () => {
             }}
             color={theme.colors.SECONDARY_DARK}
             onPress={() => setModalFilterVisible(!modalFilterVisible)}>
-            <Icon name="filter-alt" color="#58a6ff" size={25} />
+            <Icon
+              name="filter-alt"
+              color={theme.colors.UNDERLINE_BLUE}
+              size={25}
+            />
             <Text
               style={[
                 style.sectionDescription,
-                {color: '#58a6ff', paddingLeft: 5},
+                {color: theme.colors.UNDERLINE_BLUE, paddingLeft: 5},
               ]}>
               Filter
             </Text>
@@ -90,12 +92,17 @@ export const StartScreen = () => {
             <View style={style.modalView}>
               {features.map(eachFeature => (
                 <TouchableOpacity
+                  key={eachFeature.value}
                   style={{paddingTop: 10, paddingBottom: 10}}
                   onPress={() => {
                     setFilterFeature(eachFeature.value);
                     setModalFilterVisible(!modalFilterVisible);
                   }}>
-                  <Text style={[style.sectionDescription, {color: '#58a6ff'}]}>
+                  <Text
+                    style={[
+                      style.sectionDescription,
+                      {color: theme.colors.UNDERLINE_BLUE},
+                    ]}>
                     {eachFeature.label}
                   </Text>
                 </TouchableOpacity>
@@ -111,11 +118,11 @@ export const StartScreen = () => {
             style={style.input}
             onChangeText={(numberToChange: string) =>
               numberToChange === ''
-                ? setMaximumPrice(1000)
+                ? setMaximumPrice(null)
                 : setMaximumPrice(parseInt(numberToChange))
             }
             placeholderTextColor="#808080"
-            value={maximumPrice}
+            value={maximumPrice?.toString()}
             placeholder="Max Price"
             keyboardType="numeric"
           />
@@ -137,7 +144,9 @@ export const StartScreen = () => {
                 ? a[filterFeature] - b[filterFeature]
                 : b[filterFeature] - a[filterFeature],
             )
-            .filter((hotel: HotelListType) => hotel.price < maximumPrice)
+            .filter((hotel: HotelListType) =>
+              maximumPrice ? hotel.price < maximumPrice : hotel.price,
+            )
             .map((hotel: HotelListType) => (
               <HotelSection
                 key={hotel.id}

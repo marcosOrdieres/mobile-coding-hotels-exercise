@@ -5,6 +5,7 @@ const LIGHT = '#ecf0f1';
 const SILVER = '#bdc3c7';
 const LASTMINUTE = '#f2007d';
 const STAR = '#f1df5a';
+const UNDERLINE_BLUE = '#58a6ff';
 
 const common = {
   SUCCESS: EMERALD,
@@ -12,6 +13,7 @@ const common = {
   SILVER: SILVER,
   SECONDARY_DARK: SECONDARY_DARK,
   STAR: STAR,
+  UNDERLINE_BLUE: UNDERLINE_BLUE,
 };
 
 const light = {

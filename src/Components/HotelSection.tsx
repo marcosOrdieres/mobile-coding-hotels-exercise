@@ -13,7 +13,8 @@ export interface HotelSectionProps {
   address: string;
   price: number;
   currency: string;
-  onPressMoreDetails: any;
+  onPressMoreDetails: () => void;
+  onPressPackages: () => void;
 }
 
 export const HotelSection: React.FC<HotelSectionProps> = props => {
@@ -35,6 +36,7 @@ export const HotelSection: React.FC<HotelSectionProps> = props => {
             onError={() => setImageError(true)}
           />
         </View>
+
         <View style={style.hotelTextView}>
           <View style={style.ratingBox}>
             <Text style={style.ratingText}>{props.userRating}</Text>
@@ -57,6 +59,12 @@ export const HotelSection: React.FC<HotelSectionProps> = props => {
           <Text style={style.hotelSectionText}>Address: {props.address}</Text>
         </View>
       </View>
+
+      <TouchableOpacity onPress={props.onPressPackages}>
+        <Text style={[style.priceText, {paddingTop: 10, color: 'blue'}]}>
+          Show Packages
+        </Text>
+      </TouchableOpacity>
 
       <View style={style.priceView}>
         <View style={{flex: 0.95, alignItems: 'flex-end'}}>

@@ -17,16 +17,26 @@ import HotelSection from '../../Components/HotelSection';
 import {useFetch} from '../../hooks/useFetch';
 import useTheme from '../../Theme/useTheme';
 import useThemedStyles from '../../Theme/useThemedStyles';
-import {HotelListType} from '../../types/HotelListType';
+import {
+  FlightType,
+  HolidayPackageType,
+  HotelListType,
+} from '../../types/HotelListType';
 import DetailedHotel from '../../Components/DetailedHotel';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import DetailedPackage from '../../Components/DetailedPackage';
 
 export const StartScreen = () => {
   const [filterFeature, setFilterFeature] = useState<string>('price');
   const [maximumPrice, setMaximumPrice] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  const [modalPackageVisible, setModalPackageVisible] =
+    useState<boolean>(false);
+
   const [modalFilterVisible, setModalFilterVisible] = useState<boolean>(false);
   const [hotelData, setHotelData] = useState<HotelListType | null>(null);
+  const [packageData, setPackageData] = useState<FlightType | null>(null);
 
   const {response, isLoading, error, setFetch} = useFetch();
   const theme = useTheme();
@@ -35,7 +45,7 @@ export const StartScreen = () => {
 
   useEffect(() => {
     //setFetch(`${process.env.REACT_APP_LASTMINUTE_URL}`);
-    setFetch('https://run.mocky.io/v3/eef3c24d-5bfd-4881-9af7-0b404ce09507');
+    setFetch('https://run.mocky.io/v3/23d149ef-853a-412b-86f3-6c8550f00fdc');
   }, [setFetch]);
 
   const features = [
@@ -43,6 +53,8 @@ export const StartScreen = () => {
     {label: 'Stars', value: 'stars'},
     {label: 'User rating', value: 'userRating'},
   ];
+
+  console.log('response', response);
 
   return (
     <SafeAreaView style={{backgroundColor: theme.colors.BACKGROUND}}>
@@ -104,7 +116,6 @@ export const StartScreen = () => {
           <Text style={[style.sectionDescription, {color: 'white'}]}>
             Ordered by: {filterFeature}
           </Text>
-
           <TextInput
             style={style.input}
             onChangeText={(numberToChange: string) =>
@@ -122,36 +133,43 @@ export const StartScreen = () => {
         {!error && !isLoading && (
           <View style={style.resultsView}>
             <Text style={style.sectionDescription}>
-              {response?.length} out of {response?.length} results
+              {response?.holidayPackages?.length} out of{' '}
+              {response?.holidayPackages?.length} results
             </Text>
           </View>
         )}
 
         {!isLoading &&
           !error &&
-          response
-            ?.sort((a: HotelListType, b: HotelListType) =>
+          response?.holidayPackages
+            ?.sort((a: HolidayPackageType, b: HolidayPackageType) =>
               filterFeature === 'price'
-                ? a[filterFeature] - b[filterFeature]
-                : b[filterFeature] - a[filterFeature],
+                ? a.hotel[filterFeature] - b.hotel[filterFeature]
+                : b.hotel[filterFeature] - a.hotel[filterFeature],
             )
-            .filter((hotel: HotelListType) =>
-              maximumPrice ? hotel.price < maximumPrice : hotel.price,
+            .filter((holidayPackage: HolidayPackageType) =>
+              maximumPrice
+                ? holidayPackage.hotel.price < maximumPrice
+                : holidayPackage.hotel.price,
             )
-            .map((hotel: HotelListType) => (
+            .map((holidayPackage: HolidayPackageType) => (
               <HotelSection
-                key={hotel.id}
-                uri={hotel.gallery[0]}
-                userRating={hotel.userRating}
-                name={hotel.name}
-                stars={hotel.stars}
-                city={hotel.location.city}
-                address={hotel.location.address}
-                price={hotel.price}
-                currency={hotel.currency}
+                key={holidayPackage.hotel.id}
+                uri={holidayPackage.hotel.gallery[0]}
+                userRating={holidayPackage.hotel.userRating}
+                name={holidayPackage.hotel.name}
+                stars={holidayPackage.hotel.stars}
+                city={holidayPackage.hotel.location.city}
+                address={holidayPackage.hotel.location.address}
+                price={holidayPackage.hotel.price}
+                currency={holidayPackage.hotel.currency}
                 onPressMoreDetails={() => {
                   setModalVisible(true);
-                  setHotelData(hotel);
+                  setHotelData(holidayPackage.hotel);
+                }}
+                onPressPackages={() => {
+                  setModalPackageVisible(true);
+                  setPackageData(holidayPackage.flight);
                 }}
               />
             ))}
@@ -172,6 +190,17 @@ export const StartScreen = () => {
           <DetailedHotel
             onHidePress={() => setModalVisible(!modalVisible)}
             data={hotelData}
+          />
+        </Modal>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalPackageVisible}
+          onRequestClose={() => setModalPackageVisible(!modalPackageVisible)}>
+          <DetailedPackage
+            onHidePress={() => setModalPackageVisible(!modalPackageVisible)}
+            data={packageData}
           />
         </Modal>
       </ScrollView>

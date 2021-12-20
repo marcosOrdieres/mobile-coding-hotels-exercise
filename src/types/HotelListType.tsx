@@ -25,3 +25,18 @@ export type HotelListType = {
   stars: number;
   userRating: number;
 };
+
+export type FlightType = {
+  id: string;
+  airline: string;
+  arrivalAirport: string;
+  arrivalTime: string;
+  departureAirport: string;
+  departureTime: string;
+};
+
+export type HolidayPackageType = {
+  id: string;
+  flight: FlightType;
+  hotel: HotelListType;
+};

@@ -1,58 +1,49 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  ScrollView,
-  Image,
-} from 'react-native';
+import {View, Text, StyleSheet, Pressable, ScrollView} from 'react-native';
 import useThemedStyles from '../Theme/useThemedStyles';
-import {HotelListType} from '../types/HotelListType';
+import {FlightType} from '../types/HotelListType';
+import moment from 'moment';
 
-export interface DetailedHotelProps {
-  data: HotelListType | null;
+export interface DetailedPackageProps {
+  data: FlightType | null;
   onHidePress: () => void;
 }
 
-export const DetailedHotel: React.FC<DetailedHotelProps> = props => {
-  const [imageError, setImageError] = useState<boolean>(false);
+export const DetailedHotel: React.FC<DetailedPackageProps> = props => {
   const style = useThemedStyles(styles);
 
   return (
     <ScrollView style={style.centeredView}>
       <View style={style.modalView}>
-        <Text style={style.modalTextMain}>{props.data?.name}</Text>
-        <ScrollView horizontal={true}>
-          {props.data?.gallery.map((hotelImage: string, index: number) => (
-            <View key={index} style={{width: 250, height: 250, margin: 10}}>
-              <Image
-                style={style.imageView}
-                source={
-                  imageError
-                    ? require('../assets/Images/default_image.jpeg')
-                    : {uri: hotelImage}
-                }
-                onError={() => setImageError(true)}
-              />
-            </View>
-          ))}
-        </ScrollView>
-        <Text style={style.modalTextDetailsTitle}>Contact details</Text>
+        <Text style={style.modalTextMain}>Holiday Packages</Text>
+
+        <Text style={style.modalTextDetailsTitle}>Airline: </Text>
         <Text style={style.modalTextDetailsSubtitle}>
-          {props.data?.contact.email}
+          {props.data?.airline}
         </Text>
-        <Text style={style.modalTextDetailsSubtitle}>
-          {props.data?.contact.phoneNumber}
-        </Text>
-        <Text style={style.modalTextDetailsTitle}>Location details</Text>
+
+        <Text style={style.modalTextDetailsTitle}>Arrival airport:</Text>
 
         <Text style={style.modalTextDetailsSubtitle}>
-          {props.data?.location.address}, {props.data?.location.city}
+          {props.data?.arrivalAirport}
         </Text>
+
+        <Text style={style.modalTextDetailsTitle}>Arrival time:</Text>
+
         <Text style={style.modalTextDetailsSubtitle}>
-          latitude: {props.data?.location.latitude}, longitude:
-          {props.data?.location.longitude}
+          {moment(props.data?.arrivalTime).format('L')}
+        </Text>
+
+        <Text style={style.modalTextDetailsTitle}>Departure Airport:</Text>
+
+        <Text style={style.modalTextDetailsSubtitle}>
+          {props.data?.departureAirport}
+        </Text>
+
+        <Text style={style.modalTextDetailsTitle}>Departure Time:</Text>
+
+        <Text style={style.modalTextDetailsSubtitle}>
+          {moment(props.data?.departureTime).format('L')}
         </Text>
 
         <Pressable
